@@ -1,0 +1,8 @@
+body {
+  background-color: #ebf2ff;
+  font-family: "Poppins", sans-serif;
+}
+
+#add-new-btn {
+  border-radius: 15px;
+}
