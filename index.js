@@ -1,17 +1,17 @@
 const taskContainer = document.querySelector(".task__container");
 
-const globalStore = [];
+let globalStore = [];
 
 const makeNewCard = (taskData) =>
   `
-    <div class="col-md-6 col-lg-4" id=${taskData.id}>
+    <div class="col-md-6 col-lg-4">
             <div class="card">
               <div class="card-header d-flex justify-content-end gap-2">
-                <button type="button" class="btn btn-outline-success">
+                <button type="button" class="btn btn-outline-success" >
                   <i class="fas fa-pencil-alt"></i>
                 </button>
-                <button type="button" class="btn btn-outline-danger">
-                  <i class="fas fa-trash-alt"></i>
+                <button type="button" class="btn btn-outline-danger" id=${taskData.id} onclick="deleteCard.apply(this,arguments)">
+                  <i class="fas fa-trash-alt" id=${taskData.id} onclick="deleteCard.apply(this,arguments)"></i>
                 </button>
               </div>
               <img
@@ -66,4 +66,26 @@ const saveChanges = () => {
   globalStore.push(taskData);
 
   localStorage.setItem("tasky", JSON.stringify({ cards: globalStore })); //cards:globalStire is needed because json expects an object parameter, so we use cards as our key for the globalStore array
+};
+
+const deleteCard = (event) => {
+  event = window.event;
+  //get id to delete
+  const targetID = event.target.id;
+  const tagname = event.target.tagName;
+  //update globalStore to remove the target id
+  globalStore = globalStore.filter((cardObject) => cardObject.id !== targetID);
+  //update the local storage
+  localStorage.setItem("tasky", JSON.stringify({ cards: globalStore }));
+
+  //contact the parent
+  if (tagname === "BUTTON") {
+    return taskContainer.removeChild(
+      event.target.parentNode.parentNode.parentNode
+    ); //we have to specify the exact address of the button element wrt its parent elements
+  } else {
+    return taskContainer.removeChild(
+      event.target.parentNode.parentNode.parentNode.parentNode
+    );
+  }
 };
